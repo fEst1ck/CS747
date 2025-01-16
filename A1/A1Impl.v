@@ -127,27 +127,71 @@ Module Part1_Impl_Tactics.
 
 Fact X1 : ∀ {A B C D:Prop}, (B ∧ (B → C ∧ D)) → D.
 Proof.
-Admitted.
+  intros A B C D H.
+  destruct H as [HB HBimplCD].
+  destruct (HBimplCD HB) as [_ HD].
+  apply HD.
+Qed.
 
 Fact X2 : ∀ {A B C:Prop}, ¬(A ∨ B) → B → C.
 Proof.
-Admitted.
+  intros A B C H HB.
+  destruct( H (or_intror HB)).
+Qed.
 
 Fact X3 : ∀ {A B C:Prop}, A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C).
 Proof.
-Admitted.
+  intros A B C H.
+  destruct H as [HA [HB | HC]].
+  - left.
+    split.
+    + apply HA.
+    + apply HB.
+  - right.
+    split.
+    + apply HA.
+    + apply HC.
+Qed.
 
 Fact X4 : ∀ {A:Prop}, A ↔ A. 
 Proof.
-Admitted.
+  intros A.
+  split.
+  - intro HA.
+    apply HA.
+  - intro HA.
+    apply HA.
+Qed.
 
 Fact X5 : ∀ {A B:Prop}, (A ↔ B) ↔ (B ↔ A).
 Proof.
-Admitted.
+  intros A B.
+  split.
+  - intro AeqvB.
+    destruct AeqvB as [AimplB BimplA].
+    split.
+    + apply BimplA.
+    + apply AimplB.
+  - intro BeqvA.
+    destruct BeqvA as [BimplA AimplB].
+    split.
+    + apply AimplB.
+    + apply BimplA.
+Qed.
 
 Fact X6 : ∀ {A B C:Prop}, (A ↔ B) → (B ↔ C) → (A ↔ C).
 Proof.
-Admitted.
+  intros A B C [AimplB BimplA] [BimplC CimplB].
+  split.
+  - intro HA.
+    apply BimplC.
+    apply AimplB.
+    apply HA.
+  - intro HC.
+    apply BimplA.
+    apply CimplB.
+    apply HC.
+Qed.
 
 End Part1_Impl_Tactics.
 
