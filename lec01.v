@@ -604,6 +604,8 @@ Module M1.
   Print unique.
   Check ex.
   Print ex.
+
+  Print ex_intro.
   (** Notice that exists is not primitive and is in fact encoded using forall. Notice that the
       variable mentioned in forall is really a parameter to the [exists_intro] constructor, allowing
       us to construct a proof of an existential claim using _any_ witness.

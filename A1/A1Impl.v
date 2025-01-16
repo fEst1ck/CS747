@@ -1,8 +1,8 @@
 (***************************************************)
 (* Provide the following meta-data first.          *)
-(* Your Name:                                      *)
-(* Your WatIAM ID:                                 *)
-(* Your Student ID:                                *)
+(* Your Name: Zekun Wang                           *)
+(* Your WatIAM ID: z2358wan                        *)
+(* Your Student ID: 20814732                       *)
 (***************************************************)
 
 (* 
@@ -33,26 +33,64 @@ Require Import A1Sig.
 
 Module Part1_Impl_ProofTerms.
 
-Definition X1 : ∀ {A B C D:Prop}, (B ∧ (B → C ∧ D)) → D.
-Admitted.
+Definition X1 : ∀ {A B C D:Prop}, (B ∧ (B → C ∧ D)) → D :=
+  fun (A B C D:Prop) (H: B ∧ (B → C ∧ D)) =>
+    match H with
+      | conj H1 H2 =>
+        match H2 H1 with
+          | conj _ Hd => Hd
+        end
+    end.
 
-Definition X2 : ∀ {A B C:Prop}, ¬(A ∨ B) → B → C.
-Admitted.
+Definition X2 : ∀ {A B C:Prop}, ¬(A ∨ B) → B → C :=
+  fun (A B C:Prop) (H : ¬(A ∨ B)) (HB : B) =>
+    match H (or_intror HB) with
+    end.
 
-Definition X3 : ∀ {A B C:Prop}, A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C).
-Admitted.
+Definition X3 : ∀ {A B C:Prop}, A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C) :=
+  fun (A B C:Prop) (H:A ∧ (B ∨ C)) =>
+    match H with
+      | conj HA HBorC =>
+        match HBorC with
+          | or_introl HB => or_introl (conj HA HB)
+          | or_intror HC => or_intror (conj HA HC)
+        end
+    end.
 
 (** To solve the following, you will need to figure out what
    the definition of "[↔]" is and how to work with it. *)
 
-Definition X4 : ∀ {A:Prop}, A ↔ A. 
-Admitted.
+Locate "↔".
+Check iff.
+Print iff.
 
-Definition X5 : ∀ {A B:Prop}, (A ↔ B) ↔ (B ↔ A).
-Admitted.
+Definition X4 : ∀ {A:Prop}, A ↔ A :=
+  fun (A:Prop) =>
+    conj (fun x => x) (fun x => x).
 
-Definition X6 : ∀ {A B C:Prop}, (A ↔ B) → (B ↔ C) → (A ↔ C).
-Admitted.
+Definition X5 : ∀ {A B:Prop}, (A ↔ B) ↔ (B ↔ A) :=
+  fun (A B:Prop) =>
+    conj
+      (fun AeqvB =>
+        match AeqvB with
+          | conj AimplB BimplA => conj BimplA AimplB
+        end)
+      (fun BeqvA =>
+        match BeqvA with
+          | conj BimplA AimplB => conj AimplB BimplA
+        end).
+
+Definition X6 : ∀ {A B C:Prop}, (A ↔ B) → (B ↔ C) → (A ↔ C) :=
+  fun (A B C:Prop) (AeqvB:A ↔ B) (BeqvC:B ↔ C) =>
+    match AeqvB with
+      | conj AimplB BimplA =>
+        match BeqvC with
+        | conj BimplC CimplB =>
+          conj
+            (fun HA => BimplC (AimplB HA))
+            (fun HC => BimplA (CimplB HC))
+        end
+    end.
 
 (** Thought exercise:
 
