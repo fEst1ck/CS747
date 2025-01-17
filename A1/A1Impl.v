@@ -297,7 +297,14 @@ Fixpoint mirror {A : Type} (t : tree A) : tree A :=
    end.
 
 Fact mirror_mirror : ∀ A (t:tree A), mirror (mirror t) = t.
-Admitted.
+Proof.
+  intros A t.
+  induction t as [|l IHl x r IHr].
+  - reflexivity.
+  - simpl.
+    rewrite IHl, IHr.
+    reflexivity.
+Qed. 
 
 Fixpoint flatten {A} (t : tree A) : list A := 
    match t with 
