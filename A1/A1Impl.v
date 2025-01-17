@@ -211,28 +211,78 @@ Require Import List.
 Module Part2_Impl.
 
 Fact zero_plus_x : ∀ n, 0 + n = n.
-Admitted.
+Proof.
+  intro n.
+  reflexivity.
+Qed.
 
 Fact x_plus_zero : ∀ n, n + 0 = n.
-Admitted.
+Proof.
+  intro n.
+  induction n as [|n' IHn'].
+  - reflexivity.
+  - simpl.
+    rewrite IHn'.
+    reflexivity.
+Qed.
 
 Fact map_map : ∀ {A B C} (f : A → B) (g : B → C) (xs : list A), 
    map g (map f xs) = map (fun x => g (f x)) xs.
-Admitted.
+Proof.
+  intros A B C f g xs.
+  induction xs as [|x xs' IHxs'].
+  - reflexivity.
+  - simpl.
+    rewrite IHxs'.
+    reflexivity.
+Qed.
 
 Fact app_assoc : ∀ {A} (xs ys zs : list A), 
    xs ++ (ys ++ zs) = (xs ++ ys) ++ zs.
-Admitted.
+Proof.
+  intros A xs ys zs.
+  induction xs as [|x xs IHxs].
+  - reflexivity.
+  - simpl.
+    rewrite IHxs.
+    reflexivity.
+Qed.
 
 Fact map_is_fold : ∀ {A B} (f : A → B) (xs : list A),
    map f xs = fold_right (fun x y => (f x) :: y) nil xs.
-Admitted.
+Proof.
+  intros A B f xs.
+  induction xs as [|x xs IHxs].
+  - reflexivity.
+  - simpl.
+    rewrite IHxs.
+    reflexivity.
+Qed.
 
 Definition list_sum (xs : list nat) : nat := fold_right plus 0 xs.
 
+Theorem add_assoc : ∀ n m p : nat,
+  n + (m + p) = (n + m) + p.
+Proof.
+  intros n m p.
+  induction n as [|n' IHn'].
+  - reflexivity.
+  - simpl.
+    rewrite IHn'.
+    reflexivity.
+Qed.
+
 Fact list_sum_app : ∀ (t1 t2 : list nat), 
    list_sum (t1 ++ t2) = list_sum t1 + list_sum t2.
-Admitted.
+(* (x1 + ... + xn + y1 + ... + ym = (x1 + ... + xn) + (y1 + ... + ym) *)
+Proof.
+  intros t1 t2.
+  induction t1 as [|x t1 Ht1].
+  - reflexivity.
+  - simpl.
+    rewrite Ht1.
+    apply add_assoc.
+Qed.
 
 Inductive tree (A : Type) : Type := 
 | Leaf : tree A
