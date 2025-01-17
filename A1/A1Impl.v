@@ -319,7 +319,17 @@ Fixpoint tree_sum t : nat :=
    end.
 
 Fact tree_flatten_sum : ∀ t, tree_sum t = list_sum (flatten t).
-Admitted.
+Proof.
+  intros t.
+  induction t as [|l IHl x r IHr].
+  - reflexivity.
+  - simpl.
+    rewrite IHl, IHr.
+    rewrite list_sum_app.
+    simpl.
+    rewrite add_assoc.
+    reflexivity.
+Qed.
 
 End Part2_Impl.
 
@@ -346,8 +356,12 @@ Inductive chest : Type := Silver | Gold | Lead.
 Definition inChest (location c : chest) : Prop := location = c.
 
 (** Formalize the inscriptions on the chests. *)
-Definition chestInscription (location c : chest) : Prop.
-Admitted.
+Definition chestInscription (location c : chest) : Prop :=
+  match c with
+  | Silver => not (inChest location c)
+  | Gold => inChest location c
+  | Lead => not (inChest location Gold)
+  end.
 
 Definition atMostOneInscriptionIsTrue location : Prop :=
   ∀ (c1 c2:chest), (chestInscription location c1) → (chestInscription location c2) → c1 = c2.
@@ -355,7 +369,15 @@ Definition atMostOneInscriptionIsTrue location : Prop :=
 (** Prove the solution. *)
 Theorem ItsSilver location :
   atMostOneInscriptionIsTrue location → inChest location Silver.
-Admitted.
+Proof.
+  intro H.
+  destruct location.
+  - reflexivity.
+  - destruct (H Gold Silver eq_refl (fun x => match x with end)).
+    reflexivity.
+  - destruct (H Silver Lead (fun x => match x with end) (fun x => match x with end)).
+    reflexivity.
+Qed.
 
 End Part3_Impl.
 
