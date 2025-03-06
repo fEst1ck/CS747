@@ -144,8 +144,6 @@ Fixpoint sorted (xs:list nat) : Prop :=
 
 Definition count := count_occ nat_eq.
 
-
-
 (** To prove [merge_preserves_list_all] for [merge], it is helpful to first prove [merge_rec_preserves_list_all] for [merge_rec] by well-founded induction.  Mutatis mutandis, for the other properties you will prove below about [merge]. *)
 Lemma merge_rec_preserves_list_all : ∀ P xs_ys ACC,
   list_all P (fst xs_ys) → list_all P (snd xs_ys) → list_all P (@merge_rec xs_ys ACC).
@@ -201,7 +199,10 @@ Qed.
 
 Lemma merge_preserves_list_all : ∀ P xs ys,
   list_all P xs → list_all P ys → list_all P (merge xs ys).
-Admitted.
+Proof.
+  intros P xs ys Hxs Hys.
+  apply merge_rec_preserves_list_all; crush.
+Qed.
 
 Lemma merge_preserves_sorted : ∀ xs ys,
    sorted xs → sorted ys → sorted (merge xs ys).
